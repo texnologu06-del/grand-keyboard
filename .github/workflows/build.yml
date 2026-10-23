@@ -17,7 +17,8 @@ jobs:
     # Розпакування твого архіву перед збіркою
     - name: Unzip GrandAdminTools
       run: |
-        if [ -f "GrandAdminTools (2).zip" ]; then
+     unzip -o "GrandAdminTools_v2.zip" -d .
+
           unzip -o "GrandAdminTools (2).zip" -d .
         elif [ -f "GrandAdminTools(2).zip" ]; then
           unzip -o "GrandAdminTools(2).zip" -d .
