@@ -34,11 +34,8 @@ jobs:
         [ -d "res" ] && cp -r res/* android-project/app/src/main/res/ || echo "No res dir"
 
         # Створюємо технічний xml-файл методу введення
-        cat << 'EOF' > android-project/app/src/main/res/xml/method.xml
-        <?xml version="1.0" encoding="utf-8"?>
-        <input-method xmlns:android="http://android.com"
-            android:settingsActivity="app.admin.keyboard.MainActivity" />
-        EOF
+        echo '<?xml version="1.0" encoding="utf-8"?>' > android-project/app/src/main/res/xml/method.xml
+        echo '<input-method xmlns:android="http://android.com" android:settingsActivity="app.admin.keyboard.MainActivity" />' >> android-project/app/src/main/res/xml/method.xml
 
         # ВИДАЛЯЄМО НЕВИДИМИЙ СИМВОЛ BOM (\ufeff)
         find android-project/app/src/main/java -type f -name "*.java" -exec sed -i '1s/^\xef\xbb\xbf//' {} +
@@ -46,33 +43,19 @@ jobs:
         # АВТОМАТИЧНО ДОДАЄМО ІМПОРТ КЛАСУ R У ВСІ JAVA ФАЙЛИ
         find android-project/app/src/main/java -type f -name "*.java" -exec sed -i '2i import app.admin.keyboard.R;' {} +
 
-        # ГЕНЕРУЄМО ПОВНОЦІННИЙ МАНІФЕСТ З УСІМА СИСТЕМНИМИ ПРЕФІКСАМИ ANDROID
-        cat << 'EOF' > android-project/app/src/main/AndroidManifest.xml
-        <?xml version="1.0" encoding="utf-8"?>
-        <manifest xmlns:android="http://android.com">
-            
-            <uses-permission android:name="android.permission.INTERNET" />
-
-            <application
-                android:label="LiksonTOOLS v2"
-                android:supportsRtl="true">
-                
-                <service
-                    android:name="app.admin.keyboard.AdminKeyboardService"
-                    android:label="LiksonTOOLS v2"
-                    android:permission="android.permission.BIND_INPUT_METHOD"
-                    android:exported="true">
-                    <intent-filter>
-                        <action android:name="android.view.InputMethod" />
-                    </intent-filter>
-                    <meta-data
-                        android:name="android.view.im"
-                        android:resource="@xml/method" />
-                </service>
-                
-            </application>
-        </manifest>
-        EOF
+        # НАДІЙНО ГЕНЕРУЄМО МАНІФЕСТ РЯДОК ЗА РЯДКОМ БЕЗ СИНТАКСИЧНИХ ЗБОЇВ
+        echo '<?xml version="1.0" encoding="utf-8"?>' > android-project/app/src/main/AndroidManifest.xml
+        echo '<manifest xmlns:android="http://android.com">' >> android-project/app/src/main/AndroidManifest.xml
+        echo '    <uses-permission android:name="android.permission.INTERNET" />' >> android-project/app/src/main/AndroidManifest.xml
+        echo '    <application android:label="LiksonTOOLS v2" android:supportsRtl="true">' >> android-project/app/src/main/AndroidManifest.xml
+        echo '        <service android:name="app.admin.keyboard.AdminKeyboardService" android:label="LiksonTOOLS v2" android:permission="android.permission.BIND_INPUT_METHOD" android:exported="true">' >> android-project/app/src/main/AndroidManifest.xml
+        echo '            <intent-filter>' >> android-project/app/src/main/AndroidManifest.xml
+        echo '                <action android:name="android.view.InputMethod" />' >> android-project/app/src/main/AndroidManifest.xml
+        echo '            </intent-filter>' >> android-project/app/src/main/AndroidManifest.xml
+        echo '            <meta-data android:name="android.view.im" android:resource="@xml/method" />' >> android-project/app/src/main/AndroidManifest.xml
+        echo '        </service>' >> android-project/app/src/main/AndroidManifest.xml
+        echo '    </application>' >> android-project/app/src/main/AndroidManifest.xml
+        echo '</manifest>' >> android-project/app/src/main/AndroidManifest.xml
 
         # Створюємо чистий та правильний build.gradle для проєкту
         cat << 'EOF' > android-project/build.gradle
