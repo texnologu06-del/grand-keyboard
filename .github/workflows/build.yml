@@ -33,8 +33,11 @@ jobs:
         [ -d "app" ] && cp -r app/* android-project/app/src/main/java/ || echo "No app dir"
         [ -d "res" ] && cp -r res/* android-project/app/src/main/res/ || echo "No res dir"
 
-        # ВИДАЛЯЄМО НЕВИДИМИЙ СИМВОЛ BOM (\ufeff), ЯКИЙ ЛАМАЄ КОМПІЛЯТОР JAVA
+        # ВИДАЛЯЄМО НЕВИДИМИЙ СИМВОЛ BOM (\ufeff)
         find android-project/app/src/main/java -type f -name "*.java" -exec sed -i '1s/^\xef\xbb\xbf//' {} +
+
+        # АВТОМАТИЧНО ДОДАЄМО ІМПОРТ КЛАСУ R У ВСІ JAVA ФАЙЛИ
+        find android-project/app/src/main/java -type f -name "*.java" -exec sed -i '2i import app.admin.keyboard.R;' {} +
 
         # ГЕНЕРУЄМО КРИШТАЛЕВО ЧИСТИЙ І ПРАВИЛЬНИЙ МАНІФЕСТ
         cat << 'EOF' > android-project/app/src/main/AndroidManifest.xml
