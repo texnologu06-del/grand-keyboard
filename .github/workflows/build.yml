@@ -33,6 +33,9 @@ jobs:
         [ -d "app" ] && cp -r app/* android-project/app/src/main/java/ || echo "No app dir"
         [ -d "res" ] && cp -r res/* android-project/app/src/main/res/ || echo "No res dir"
 
+        # ВИДАЛЯЄМО НЕВИДИМИЙ СИМВОЛ BOM (\ufeff), ЯКИЙ ЛАМАЄ КОМПІЛЯТОР JAVA
+        find android-project/app/src/main/java -type f -name "*.java" -exec sed -i '1s/^\xef\xbb\xbf//' {} +
+
         # ГЕНЕРУЄМО КРИШТАЛЕВО ЧИСТИЙ І ПРАВИЛЬНИЙ МАНІФЕСТ
         cat << 'EOF' > android-project/app/src/main/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
