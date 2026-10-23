@@ -46,7 +46,7 @@ jobs:
         # АВТОМАТИЧНО ДОДАЄМО ІМПОРТ КЛАСУ R У ВСІ JAVA ФАЙЛИ
         find android-project/app/src/main/java -type f -name "*.java" -exec sed -i '2i import app.admin.keyboard.R;' {} +
 
-        # ГЕНЕРУЄМО ПОВНОЦІННИЙ МАНІФЕСТ З ВИПРАВЛЕНИМИ АТРИБУТАМИ
+        # ГЕНЕРУЄМО ПОВНОЦІННИЙ МАНІФЕСТ З УСІМА СИСТЕМНИМИ ПРЕФІКСАМИ ANDROID
         cat << 'EOF' > android-project/app/src/main/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
         <manifest xmlns:android="http://android.com">
