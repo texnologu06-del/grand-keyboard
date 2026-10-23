@@ -27,11 +27,18 @@ jobs:
     - name: Restructure Project for Android Build
       run: |
         mkdir -p android-project/app/src/main/java
-        mkdir -p android-project/app/src/main/res
+        mkdir -p android-project/app/src/main/res/xml
         
         # Переносимо твої файли у правильні папки коду та ресурсів
         [ -d "app" ] && cp -r app/* android-project/app/src/main/java/ || echo "No app dir"
         [ -d "res" ] && cp -r res/* android-project/app/src/main/res/ || echo "No res dir"
+
+        # Створюємо технічний xml-файл методу введення, без якого Android не бачить клавіатуру
+        cat << 'EOF' > android-project/app/src/main/res/xml/method.xml
+        <?xml version="1.0" encoding="utf-8"?>
+        <input-method xmlns:android="http://android.com"
+            android:settingsActivity="app.admin.keyboard.MainActivity" />
+        EOF
 
         # ВИДАЛЯЄМО НЕВИДИМИЙ СИМВОЛ BOM (\ufeff)
         find android-project/app/src/main/java -type f -name "*.java" -exec sed -i '1s/^\xef\xbb\xbf//' {} +
@@ -39,13 +46,31 @@ jobs:
         # АВТОМАТИЧНО ДОДАЄМО ІМПОРТ КЛАСУ R У ВСІ JAVA ФАЙЛИ
         find android-project/app/src/main/java -type f -name "*.java" -exec sed -i '2i import app.admin.keyboard.R;' {} +
 
-        # ГЕНЕРУЄМО КРИШТАЛЕВО ЧИСТИЙ І ПРАВИЛЬНИЙ МАНІФЕСТ
+        # ГЕНЕРУЄМО ПОВНОЦІННИЙ МАНІФЕСТ З СИСТЕМНИМИ ДОЗВОЛАМИ КЛАВІАТУРИ
         cat << 'EOF' > android-project/app/src/main/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
         <manifest xmlns:android="http://android.com">
+            
+            <uses-permission android:name="android.permission.INTERNET" />
+
             <application
                 android:label="LiksonTOOLS v2"
                 android:supportsRtl="true">
+                
+                <!-- Прописуємо твій сервіс клавіатури зі спеціальними фільтрами -->
+                <service
+                    android:name="app.admin.keyboard.AdminKeyboardService"
+                    android:label="LiksonTOOLS v2"
+                    android:permission="android.permission.BIND_INPUT_METHOD"
+                    android:exported="true">
+                    <intent-filter>
+                        <action android:name="android.view.InputMethod" />
+                    </intent-filter>
+                    <meta-data
+                        android:name="android.view.im"
+                        android:resource="@xml/method" />
+                </service>
+                
             </application>
         </manifest>
         EOF
