@@ -33,7 +33,7 @@ jobs:
         [ -d "app" ] && cp -r app/* android-project/app/src/main/java/ || echo "No app dir"
         [ -d "res" ] && cp -r res/* android-project/app/src/main/res/ || echo "No res dir"
 
-        # Створюємо технічний xml-файл методу введення, без якого Android не бачить клавіатуру
+        # Створюємо технічний xml-файл методу введення
         cat << 'EOF' > android-project/app/src/main/res/xml/method.xml
         <?xml version="1.0" encoding="utf-8"?>
         <input-method xmlns:android="http://android.com"
@@ -46,7 +46,7 @@ jobs:
         # АВТОМАТИЧНО ДОДАЄМО ІМПОРТ КЛАСУ R У ВСІ JAVA ФАЙЛИ
         find android-project/app/src/main/java -type f -name "*.java" -exec sed -i '2i import app.admin.keyboard.R;' {} +
 
-        # ГЕНЕРУЄМО ПОВНОЦІННИЙ МАНІФЕСТ З СИСТЕМНИМИ ДОЗВОЛАМИ КЛАВІАТУРИ
+        # ГЕНЕРУЄМО ПОВНОЦІННИЙ МАНІФЕСТ З ВИПРАВЛЕНИМИ АТРИБУТАМИ
         cat << 'EOF' > android-project/app/src/main/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
         <manifest xmlns:android="http://android.com">
@@ -57,7 +57,6 @@ jobs:
                 android:label="LiksonTOOLS v2"
                 android:supportsRtl="true">
                 
-                <!-- Прописуємо твій сервіс клавіатури зі спеціальними фільтрами -->
                 <service
                     android:name="app.admin.keyboard.AdminKeyboardService"
                     android:label="LiksonTOOLS v2"
