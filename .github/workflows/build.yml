@@ -23,24 +23,26 @@ jobs:
           echo "Zip file not found!"
         fi
 
-    # Вирізаємо атрибут package з файлу AndroidManifest.xml, щоб Gradle не видавав помилку
-    - name: Clean AndroidManifest
-      run: |
-        if [ -f "AndroidManifest.xml" ]; then
-          sed -i 's/package="[^"]*"//g' AndroidManifest.xml
-          echo "AndroidManifest.xml successfully cleaned!"
-        fi
-
     # Створюємо правильну структуру папок для Android проєкту
     - name: Restructure Project for Android Build
       run: |
         mkdir -p android-project/app/src/main/java
         mkdir -p android-project/app/src/main/res
         
-        # Переносимо твої файли у правильні папки
+        # Переносимо твої файли у правильні папки коду та ресурсів
         [ -d "app" ] && cp -r app/* android-project/app/src/main/java/ || echo "No app dir"
         [ -d "res" ] && cp -r res/* android-project/app/src/main/res/ || echo "No res dir"
-        [ -f "AndroidManifest.xml" ] && cp AndroidManifest.xml android-project/app/src/main/ || echo "No manifest"
+
+        # ГЕНЕРУЄМО КРИШТАЛЕВО ЧИСТИЙ І ПРАВИЛЬНИЙ МАНІФЕСТ
+        cat << 'EOF' > android-project/app/src/main/AndroidManifest.xml
+        <?xml version="1.0" encoding="utf-8"?>
+        <manifest xmlns:android="http://android.com">
+            <application
+                android:label="LiksonTOOLS v2"
+                android:supportsRtl="true">
+            </application>
+        </manifest>
+        EOF
 
         # Створюємо чистий та правильний build.gradle для проєкту
         cat << 'EOF' > android-project/build.gradle
