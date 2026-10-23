@@ -14,14 +14,10 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # Розпакування твого архіву перед збіркою
-    - name: Unzip GrandAdminTools
+    - name: Unzip GrandAdminTools_v2
       run: |
-     unzip -o "GrandAdminTools_v2.zip" -d .
-
-          unzip -o "GrandAdminTools (2).zip" -d .
-        elif [ -f "GrandAdminTools(2).zip" ]; then
-          unzip -o "GrandAdminTools(2).zip" -d .
+        if [ -f "GrandAdminTools_v2.zip" ]; then
+          unzip -o "GrandAdminTools_v2.zip" -d .
         else
           echo "Zip file not found!"
         fi
