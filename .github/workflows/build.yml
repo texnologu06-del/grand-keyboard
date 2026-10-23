@@ -23,13 +23,21 @@ jobs:
           echo "Zip file not found!"
         fi
 
+    # Видаляємо застарілий атрибут package з AndroidManifest.xml, щоб Gradle не ругався
+    - name: Fix AndroidManifest package attribute
+      run: |
+        if [ -f "AndroidManifest.xml" ]; then
+          sed -i 's/package="[^"]*"//g' AndroidManifest.xml
+          echo "AndroidManifest.xml fixed!"
+        fi
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
 
-    # Встановлюємо правильну нову версію Gradle
+    # Встановлюємо правильну версію Gradle
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
       with:
