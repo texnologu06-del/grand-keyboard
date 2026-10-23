@@ -14,12 +14,21 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
+    # Розпакування твого архіву
     - name: Unzip GrandAdminTools_v2.1
       run: |
         if [ -f "GrandAdminTools_v2.1.zip" ]; then
           unzip -o "GrandAdminTools_v2.1.zip" -d .
         else
           echo "Zip file not found!"
+        fi
+
+    # Перевіряємо структуру і переносимо файли в корінь, якщо вони всередині папки
+    - name: Fix Directory Structure
+      run: |
+        if [ -d "AdminKeyboard" ]; then
+          cp -r AdminKeyboard/* .
+          rm -rf AdminKeyboard
         fi
 
     - name: Set up JDK 17
